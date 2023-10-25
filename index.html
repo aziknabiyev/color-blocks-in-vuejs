@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Тестовая задача</h1>
+    </header>
+    <section id="assignment">
+      <div class="blocks">
+        <div class="left-block">
+          <ul>
+            <li v-for="(list,index) in lists" :key="index">
+              <div class="list-block">
+                <i class="material-icons" @click="toggleCheckbox(list)" :class="list.show ? 'rotate' : ''">chevron_right</i>
+                <input type="checkbox" @click="showChildren(list)" v-model="list.checked"/>
+                <span @click="toggleCheckbox(list)">List {{++index}}</span>
+              </div>
+              <ul v-if="list.children.length && list.show" class="sub-list">
+                <li v-for="(child,key) in list.children">
+                  <div class="list-block" @click="showBlocks(child)">
+                    <input type="checkbox" v-model="child.checked"/>
+                    Item {{++key}}
+                  </div>
+                  <div class="list-inputs">
+                    <input type="number" v-model="child.number">
+                    <input type="color" v-model="child.color" />
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="right-block">
+          <div class="right-list" v-for="(list,index) in lists" :key="index">
+            <div class="head-block">
+              <span>List {{++index}}</span>
+              <button @click="changeSorting(list)" v-if="anyChildrenIsChecked(list)">Change sorting</button>
+            </div>
+            <div class="color-blocks" v-for="(child,key) in list.children" v-show="child.checked && !list.showCubes" :key="key">
+              <div class="color-cube" @click="reduce(list,key)" v-for="(color,i) in child.number" :key="i" :style="{backgroundColor:child.color}"></div>
+            </div>
+            <div class="color-blocks" v-if="list.showCubes">
+              <div class="color-cube" v-for="(cube,i) in list.cubes" @click="reduce(list,cube.index,'random',i)" :key="i" :style="{backgroundColor:cube.color}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
